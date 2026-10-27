@@ -1,0 +1,182 @@
+/*
+Skins css
+*/
+
+/*################### flat ########################*/
+.skin.flat {
+  vertical-align: top;
+}
+.skin.flat .layer-media{}
+.skin.flat .layer-content {
+  padding: 5px 10px;
+}
+.skin.flat .layer-hover {
+  display: none;
+}
+
+
+/*################### flip-x ########################*/
+
+
+.skin.flip-x {
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  overflow: hidden;
+  padding: 0;
+  perspective: 600px;
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
+
+.skin.flip-x:hover .layer-media {
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  transform: rotateX(180deg);
+  z-index: 900;
+}
+
+
+.skin.flip-x .layer-media {
+  backface-visibility: hidden;
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  float: none;
+  height: inherit;
+  left: 0;
+  text-align: center;
+  top: 0;
+  transform: rotateX(0deg) rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: all 0.4s ease-in-out 0s;
+  width: inherit;
+  z-index: 900;
+}
+
+.skin.flip-x:hover .layer-content  {
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  transform: rotateX(0deg) rotateY(0deg);
+  z-index: 1000;
+}
+
+.skin.flip-x .layer-content {
+  backface-visibility: hidden;
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  float: none;
+  height: inherit;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  transform: rotateX(-179deg);
+  transform-style: preserve-3d;
+  transition: all 0.4s ease-in-out 0s;
+  width: inherit;
+  z-index: 800;
+}
+
+.skin.flip-x .layer-hover {
+  display: none;
+}
+/*################### flip-y ########################*/
+
+
+
+
+/*################### spinright ########################*/
+
+
+.skin.spinright {
+  overflow: hidden;
+  position: relative;
+  vertical-align: top;
+}
+
+.skin.spinright:hover .layer-media {
+transform: rotate(30deg);
+opacity: 0;
+}
+
+.skin.spinright .layer-media {
+	transition: all 1s ease 0s;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+.skin.spinright:hover .layer-content{
+	opacity: 1;
+	}
+.skin.spinright .layer-content {
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transition: all 1s ease 0s;
+}
+.skin.spinright .layer-hover {
+  display: none;
+}
+
+
+
+
+
+/*################### thumbgoleft ########################*/
+
+.skin.thumbgoleft {
+  overflow: hidden;
+  position: relative;
+  vertical-align: top;
+}
+
+.skin.thumbgoleft:hover .layer-media {
+  opacity: 0;
+  transform: scale(0.5) translateX(-100%);
+}
+
+.skin.thumbgoleft .layer-media {
+  transition: all 1s ease 0s;
+  width: 100%;
+}
+.skin.thumbgoleft:hover .layer-content{
+	opacity: 1;
+	}
+.skin.thumbgoleft .layer-content {
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: all 1s ease 0s;
+}
+.skin.thumbgoleft .layer-hover {
+  display: none;
+}
+
+
+/*################### thumbrounded ########################*/
+
+
+.skin.thumbrounded{}
+.skin.thumbrounded .layer-media {
+  background: rgb(255, 255, 255) none repeat scroll 0 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.skin.thumbrounded .layer-media .thumb {
+	height:240px;
+}
+
+.skin.thumbrounded .layer-content{}
+.skin.thumbrounded .layer-hover {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+

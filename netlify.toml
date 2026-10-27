@@ -1,0 +1,10 @@
+# Deploy del sito Astro di Laura Romanò su Netlify.
+# Il dominio canonico è in astro.config.mjs (SITE_URL, da variabile URL di Netlify).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # il lockfile generato su Windows fa saltare il binding nativo per Linux: install fresco su Netlify
+  NPM_FLAGS = "--no-package-lock"

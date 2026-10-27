@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import content from './_content/contatti.html?raw';
+---
+<Layout title={"Contatti | Laura Romanò Architetto a Milano"} description={"Contatta lo studio di architettura Laura Romanò a Milano, Via A. Salaino 7: telefono +39 02 45390819, email lrarchitettura@gmail.com per il tuo progetto."} path={"/contatti/"} bodyClass={"page page-id-16 page-template-default wp-custom-logo siteorigin-panels no-sidebar"}>
+  <Fragment set:html={content} />
+</Layout>

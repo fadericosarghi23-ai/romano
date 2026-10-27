@@ -1,0 +1,19 @@
+{
+  "name": "laura-romano",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 4810",
+    "build": "astro build",
+    "preview": "astro preview --port 4811",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "5.18.2"
+  },
+  "overrides": {
+    "rollup": "4.63.0"
+  }
+}

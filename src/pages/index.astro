@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import content from './_content/index.html?raw';
+---
+<Layout title={"Laura Romanò – Studio di Architettura a Milano"} description={"Studio di architettura di Laura Romanò a Milano: progettazione di edifici residenziali, social housing, strutture sanitarie e di accoglienza, interior design."} path={"/"} bodyClass={"home page page-id-490 page-template-default wp-custom-logo siteorigin-panels siteorigin-panels-home no-sidebar"}>
+  <Fragment set:html={content} />
+</Layout>

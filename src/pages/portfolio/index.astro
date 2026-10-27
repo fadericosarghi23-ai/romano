@@ -1,0 +1,7 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import content from '../_content/portfolio-index.html?raw';
+---
+<Layout title={"Portfolio Progetti | Laura Romanò Architetto Milano"} description={"Portfolio dei progetti di architettura di Laura Romanò a Milano: residenziale, social housing, edifici pubblici e multifunzionali, strutture sanitarie, Expo 2015."} path={"/portfolio/"} bodyClass={"page page-id-258 page-parent page-template-default wp-custom-logo siteorigin-panels no-sidebar"}>
+  <Fragment set:html={content} />
+</Layout>

@@ -1,0 +1,165 @@
+---
+import { SITE } from '../data/site.ts';
+export interface Props {
+  title: string;
+  description?: string;
+  path?: string;          // es. "/bio/"
+  bodyClass?: string;
+  gridCss?: string;       // CSS griglia SiteOrigin specifico della pagina
+  ogImage?: string;
+}
+const {
+  title,
+  description = 'Studio di architettura di Laura Romanò a Milano.',
+  path = '/',
+  bodyClass = 'page siteorigin-panels no-sidebar',
+  gridCss = '',
+  ogImage = SITE.ogImage,
+} = Astro.props;
+
+const canonical = SITE.domain + path;
+const ogUrl = canonical;
+const ogImageAbs = ogImage.startsWith('http') ? ogImage : SITE.domain + ogImage;
+const isHome = path === '/';
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': ['ProfessionalService', 'LocalBusiness'],
+  name: SITE.name,
+  image: SITE.domain + SITE.ogImage,
+  url: SITE.domain + '/',
+  email: SITE.email,
+  telephone: SITE.tel.replace(/\s/g, ''),
+  vatID: 'IT' + SITE.vat,
+  priceRange: '$$',
+  address: { '@type': 'PostalAddress', streetAddress: SITE.address.street, postalCode: SITE.address.zip, addressLocality: SITE.address.city, addressCountry: SITE.address.country },
+  areaServed: 'Milano',
+  founder: { '@type': 'Person', name: 'Laura Romanò', jobTitle: 'Architetto' },
+  knowsAbout: ['Architettura', 'Edilizia residenziale', 'Social housing', 'Interior design', 'Strutture sanitarie', 'Edifici pubblici'],
+};
+
+const W = '/website/wp-content';
+const WI = '/website/wp-includes';
+// CSS personalizzato del tema (colore brand #83373d) — identico all'originale
+const brandCss = `.menu-toggle:hover,.menu-toggle:focus,a,.main-navigation a:hover,.main-navigation a:focus,.dropdown-toggle:hover,.dropdown-toggle:focus,.social-navigation a:hover:before,.social-navigation a:focus:before,.post-navigation a:hover .post-title,.post-navigation a:focus .post-title,.tagcloud a:hover,.tagcloud a:focus,.site-branding .site-title a:hover,.site-branding .site-title a:focus,.entry-title a:hover,.entry-title a:focus,.entry-footer a:hover,.entry-footer a:focus,.comment-metadata a:hover,.comment-metadata a:focus,.pingback .comment-edit-link:hover,.pingback .comment-edit-link:focus,.comment-reply-link,.comment-reply-link:hover,.comment-reply-link:focus,.required,.site-info a:hover,.site-info a:focus{color:#83373d}
+mark,ins,button:hover,button:focus,input[type="button"]:hover,input[type="button"]:focus,input[type="reset"]:hover,input[type="reset"]:focus,input[type="submit"]:hover,input[type="submit"]:focus,.pagination .prev:hover,.pagination .prev:focus,.pagination .next:hover,.pagination .next:focus,.widget_calendar tbody a,.page-links a:hover,.page-links a:focus{background-color:#83373d}
+input[type="text"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="search"]:focus,textarea:focus,.tagcloud a:hover,.tagcloud a:focus,.menu-toggle:hover,.menu-toggle:focus{border-color:#83373d}
+@media screen and (min-width:56.875em){.main-navigation li:hover > a,.main-navigation li.focus > a{color:#83373d}}
+.site-branding{margin:0 auto 0 0}.site-branding .site-title,.site-description{clip:rect(1px,1px,1px,1px);position:absolute}`;
+const bauer = `@font-face{font-family:'BauerBodoni','serif';src:url('${W}/themes/twentysixteen/fonts/bb-webfont.eot');src:url('${W}/themes/twentysixteen/fonts/bb-webfont.eot?#iefix') format('embedded-opentype'),url('${W}/themes/twentysixteen/fonts/bb-webfont.woff2') format('woff2'),url('${W}/themes/twentysixteen/fonts/bb-webfont.woff') format('woff'),url('${W}/themes/twentysixteen/fonts/bb-webfont.ttf') format('truetype'),url('${W}/themes/twentysixteen/fonts/bb-webfont.svg#bbregular') format('svg');font-weight:normal;font-style:normal}`;
+---
+<!DOCTYPE html>
+<html lang="it-IT" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script is:inline>(function(h){h.className=h.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Laura Romanò Architetto" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={ogUrl} />
+  <meta property="og:image" content={ogImageAbs} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageAbs} />
+  {isHome && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonld)} />}
+
+  <!-- Font & CSS del tema (identici all'originale) -->
+  <link rel="stylesheet" href={`${W}/plugins/wp-font-face/fonts/bb/stylesheet.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/wp-font-face/fonts/daniel/stylesheet.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/wp-font-face/generated.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/wp-font-face/additional.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/siteorigin-panels/css/front.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/contact-form-7/includes/css/styles.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/post-grid/assets/frontend/css/style.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/post-grid/assets/frontend/css/font-awesome.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/post-grid/assets/global/css/style.skins.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/post-grid/assets/global/css/style.layout.css`} />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather%3A400%2C700%2C900%2C400italic%2C700italic%2C900italic%7CMontserrat%3A400%2C700%7CInconsolata%3A400&subset=latin%2Clatin-ext" />
+  <link rel="stylesheet" href={`${W}/themes/twentysixteen/genericons/genericons.css`} />
+  <link rel="stylesheet" href={`${W}/themes/twentysixteen/style.css`} />
+  <link rel="stylesheet" href={`${W}/plugins/so-widgets-bundle/css/slider/slider.css`} />
+  <link rel="stylesheet" href={`${W}/uploads/siteorigin-widgets/sow-slider-default-abf3e628296a.css`} />
+  <link rel="stylesheet" href={`${W}/uploads/siteorigin-widgets/sow-image-default-1c389ca87c1a.css`} />
+  <style is:inline set:html={brandCss}></style>
+  <style is:inline set:html={bauer}></style>
+  {gridCss && <style is:inline set:html={gridCss}></style>}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+
+  <!-- Intro + animazioni -->
+  <link rel="stylesheet" href="/enhance/anim.css" />
+  <script is:inline src="/enhance/anim.js"></script>
+</head>
+
+<body class={bodyClass}>
+<div id="page" class="site">
+  <div class="site-inner">
+    <a class="skip-link screen-reader-text" href="#content">Salta al contenuto</a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <div class="site-header-main">
+        <div class="site-branding">
+          <a href="/" class="custom-logo-link" rel="home" itemprop="url"><img width="240" height="82" src={`${W}/uploads/2022/03/cropped-logo.png`} class="custom-logo" alt="Laura Romanò Architetto" itemprop="logo" /></a>
+          <p class="site-title"><a href="/" rel="home">Laura Romanò Architetto</a></p>
+        </div>
+        <button id="menu-toggle" class="menu-toggle">Menu</button>
+        <div id="site-header-menu" class="site-header-menu">
+          <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="Menu principale">
+            <div class="menu-main-menu-container">
+              <ul id="menu-main-menu" class="primary-menu">
+                <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/">Home</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/bio/">Bio</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/contatti/">Contatti</a></li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div id="content" class="site-content">
+      <div id="primary" class="content-area">
+        <main id="main" class="site-main" role="main">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <nav class="main-navigation" role="navigation" aria-label="Menu primario nel piè di pagina">
+        <div class="menu-main-menu-container">
+          <ul class="primary-menu">
+            <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/">Home</a></li>
+            <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/bio/">Bio</a></li>
+            <li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/contatti/">Contatti</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="site-info">
+        <div class="info-foot">Laura Romanò Architect | <a href={`mailto:${SITE.email}`}>{SITE.email}</a></div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script is:inline src={`${WI}/js/jquery/jquery.js`}></script>
+<script is:inline src={`${WI}/js/jquery/jquery-migrate.min.js`}></script>
+<script is:inline src={`${W}/plugins/post-grid/assets/frontend/js/scripts.js`}></script>
+<script is:inline src={`${W}/plugins/post-grid/assets/frontend/js/masonry.pkgd.min.js`}></script>
+<script is:inline src={`${W}/plugins/so-widgets-bundle/js/jquery.cycle.min.js`}></script>
+<script is:inline src={`${W}/plugins/so-widgets-bundle/js/slider/jquery.slider.min.js`}></script>
+<script is:inline>var screenReaderText={"expand":"apri i menu child","collapse":"chiudi i menu child"};</script>
+<script is:inline src={`${W}/themes/twentysixteen/js/skip-link-focus-fix.js`}></script>
+<script is:inline src={`${W}/themes/twentysixteen/js/functions.js`}></script>
+</body>
+</html>
