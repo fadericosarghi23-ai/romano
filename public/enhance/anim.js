@@ -11,8 +11,16 @@
   try {
     var firstVisit = true;
     try { firstVisit = !sessionStorage.getItem('lrIntroShown'); } catch (e) {}
-    if (/[?&]intro\b/.test(location.search)) firstVisit = true;   // ?intro forza l'intro (demo/test)
-    if (firstVisit && !reduce) {
+    // Refresh e avanti/indietro NON devono mostrare l'intro: solo all'apertura del sito.
+    var isReload = false;
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      isReload = nav ? (nav.type === 'reload' || nav.type === 'back_forward')
+                     : (performance.navigation && performance.navigation.type === 1);
+    } catch (e) {}
+    var force = /[?&]intro\b/.test(location.search);   // ?intro forza l'intro (demo/test)
+    if (force) { firstVisit = true; isReload = false; }
+    if (firstVisit && !isReload && !reduce) {
       try { sessionStorage.setItem('lrIntroShown', '1'); } catch (e) {}
       var ov = document.createElement('div');
       ov.id = 'lr-intro';

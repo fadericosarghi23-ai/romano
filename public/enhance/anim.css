@@ -11,6 +11,21 @@
 /* Smooth scroll leggero */
 html { scroll-behavior: smooth; }
 
+/* "L" decorativa ad angolo delle tile: riancorata bene in basso a destra
+   dell'immagine (nell'originale era posizionata male e, da mobile, fuori posto).
+   Su desktop resta l'effetto al passaggio del mouse; su touch resta visibile. */
+.page-id-490 .righe-portfolio .sow-image-container { position: relative; display: inline-block; overflow: hidden; max-width: 100%; vertical-align: top; }
+.page-id-490 .righe-portfolio .sow-image-container:after {
+  position: absolute !important;
+  left: auto !important; top: auto !important;
+  right: 0 !important; bottom: 0 !important;
+  width: 120px !important; height: 120px !important;
+  margin: 0 !important;
+}
+@media (hover: none), (max-width: 56.9em) {
+  .page-id-490 .righe-portfolio .sow-image-container:after { opacity: 1 !important; }
+}
+
 /* Hover morbido sulle tile della home (stato a riposo invariato) */
 img.so-widget-image { transition: filter .45s ease; }
 a:hover img.so-widget-image,
