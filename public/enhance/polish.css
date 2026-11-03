@@ -1,0 +1,589 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Restyle leggero ma VISIBILE — Laura Romanò
+   Interessa SOLO le pagine interne (body:not(.home)): la landing resta intatta.
+   Identità invariata: colori brand (#83373d), font, logo, impronta minimale.
+   Regole di sicurezza (vedi anim.css):
+   - MAI opacità/lazy sulle <img> → le foto non spariscono.
+   - MAI toccare gli slider (.sow-slider*): nessun transform/ritaglio su di loro.
+   - Rispetta prefers-reduced-motion.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --lr-brand: #83373d;
+  --lr-brand-d: #6e2f34;
+  --lr-ink: #2b2e34;
+  --lr-line: #e2dcd6;
+}
+
+/* === 0. Guardia assoluta: gli slider non si toccano mai =================== */
+.sow-slider-base img,
+.sow-slider-image { transform: none !important; border-radius: 0 !important; }
+
+/* === Entrata pagina: il contenuto interno entra in dissolvenza dal basso == */
+@media (prefers-reduced-motion: no-preference) {
+  body:not(.home) #primary { animation: lrEnter .8s cubic-bezier(.22,.61,.36,1) both; }
+}
+@keyframes lrEnter {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* === 1. PORTFOLIO: griglia a card uniformi =============================== */
+/* Le tile usano .sow-image-container (immagini statiche), presenti solo su
+   /portfolio e in home: body:not(.home) tiene fuori la home e gli slider
+   delle pagine-categoria usano un'altra classe (.sow-slider-base). */
+
+/* la cella diventa la "card" che si solleva */
+body:not(.home) .panel-grid-cell { transition: transform .4s cubic-bezier(.22,.61,.36,1); }
+
+/* immagine: formato uniforme 4:3, angoli morbidi, ombra, ritaglio pulito */
+body:not(.home) .panel-grid-cell .sow-image-container {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(43, 46, 52, .12);
+  transition: box-shadow .4s ease;
+}
+body:not(.home) .panel-grid-cell .sow-image-container > a { display: block; width: 100%; height: 100%; }
+body:not(.home) .panel-grid-cell .sow-image-container img.so-widget-image {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s cubic-bezier(.22,.61,.36,1), filter .45s ease;
+  will-change: transform;
+}
+/* velo sfumato color brand che compare sull'immagine al passaggio */
+body:not(.home) .panel-grid-cell .sow-image-container::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(131,55,61,.55) 0%, rgba(131,55,61,0) 55%);
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+}
+
+/* didascalia categoria: etichetta pulita, maiuscoletto, filo brand animato */
+body:not(.home) .cat-portfolio { text-align: center; margin: 16px 0 0; }
+body:not(.home) .link-cat-portfolio {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--lr-ink);
+  text-decoration: none;
+  transition: color .3s ease;
+}
+body:not(.home) .link-cat-portfolio::after {
+  content: "";
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 22px; height: 2px; background: var(--lr-brand);
+  transition: width .5s cubic-bezier(.22,.61,.36,1);
+}
+
+/* hover sulla card: sollevamento + zoom foto + velo + etichetta viva */
+@media (hover: hover) {
+  body:not(.home) .panel-grid-cell:hover { transform: translateY(-8px); }
+  body:not(.home) .panel-grid-cell:hover .sow-image-container {
+    box-shadow: 0 20px 44px rgba(131, 55, 61, .26);
+  }
+  body:not(.home) .panel-grid-cell:hover .sow-image-container img.so-widget-image {
+    transform: scale(1.07);
+  }
+  body:not(.home) .panel-grid-cell:hover .sow-image-container::after { opacity: 1; }
+  body:not(.home) .panel-grid-cell:hover .link-cat-portfolio { color: var(--lr-brand); }
+  body:not(.home) .panel-grid-cell:hover .link-cat-portfolio::after { width: 70%; }
+}
+
+/* === 2. Titolo pagina: filo brand che cresce quando il titolo entra ====== */
+body:not(.home) .entry-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: .24em;
+}
+body:not(.home) .entry-title::after {
+  content: "";
+  position: absolute; left: 0; bottom: 0;
+  height: 3px; width: 100%;
+  background: var(--lr-brand);
+  transform-origin: left center;
+}
+html.lr-anim body:not(.home) .entry-title::after {
+  transform: scaleX(0);
+  transition: transform .9s cubic-bezier(.22,.61,.36,1) .25s;
+}
+html.lr-anim body:not(.home) .entry-title.lr-in::after { transform: scaleX(1); }
+
+/* === 3. Bio: CV / PORTFOLIO come veri bottoni "pill" ===================== */
+body:not(.home) .entry-content a[href$=".pdf"],
+body:not(.home) .entry-content a[href$=".PDF"] {
+  display: inline-block;
+  margin: .5em .7em .5em 0;
+  padding: .72em 1.8em;
+  border: 1.5px solid var(--lr-brand);
+  border-radius: 40px;
+  color: var(--lr-brand) !important;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: .82em;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color .3s ease, color .3s ease, transform .25s ease, box-shadow .3s ease;
+}
+@media (hover: hover) {
+  body:not(.home) .entry-content a[href$=".pdf"]:hover,
+  body:not(.home) .entry-content a[href$=".PDF"]:hover {
+    background: var(--lr-brand);
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(131, 55, 61, .28);
+  }
+}
+
+/* link di testo normali (es. "Apri in Maps"): hover brand morbido */
+body:not(.home) .entry-content a:not(.link-cat-portfolio):not([data-goto]):not([href$=".pdf"]):not([href$=".PDF"]) {
+  transition: color .3s ease;
+}
+@media (hover: hover) {
+  body:not(.home) .entry-content a:not(.link-cat-portfolio):not([data-goto]):not([href$=".pdf"]):not([href$=".PDF"]):hover {
+    color: var(--lr-brand) !important;
+  }
+}
+
+/* === 4. Contatti: form moderno + submit come bottone brand =============== */
+body:not(.home) .wpcf7 input[type="text"],
+body:not(.home) .wpcf7 input[type="email"],
+body:not(.home) .wpcf7 input[type="tel"],
+body:not(.home) .wpcf7 input[type="url"],
+body:not(.home) .wpcf7 textarea {
+  border: 1px solid var(--lr-line);
+  border-radius: 10px;
+  padding: .8em 1em;
+  background: #faf8f6;
+  transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+}
+body:not(.home) .wpcf7 input[type="text"]:focus,
+body:not(.home) .wpcf7 input[type="email"]:focus,
+body:not(.home) .wpcf7 input[type="tel"]:focus,
+body:not(.home) .wpcf7 input[type="url"]:focus,
+body:not(.home) .wpcf7 textarea:focus {
+  border-color: var(--lr-brand);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(131, 55, 61, .12);
+  outline: none;
+}
+body:not(.home) .wpcf7 input[type="submit"],
+body:not(.home) .wpcf7 .wpcf7-submit {
+  background: var(--lr-brand);
+  color: #fff;
+  border: none;
+  border-radius: 40px;
+  padding: .85em 2.6em;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .3s ease, transform .25s ease, box-shadow .3s ease;
+}
+@media (hover: hover) {
+  body:not(.home) .wpcf7 input[type="submit"]:hover,
+  body:not(.home) .wpcf7 .wpcf7-submit:hover {
+    background: var(--lr-brand-d);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(131, 55, 61, .3);
+  }
+}
+
+/* === 5. PAGINE CATEGORIA: cornice slider, kicker, testo, nav progetti ==== */
+
+/* Sottotitolo progetto (es. "INTERIOR DESIGN") come kicker brand */
+body:not(.home) .entry-content .widget-title {
+  color: var(--lr-brand);
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-weight: 600;
+  font-size: .92rem;
+  margin-bottom: 1.1em;
+}
+
+/* Cornice dello slider: solo sul contenitore delle immagini → arrotonda e
+   mette in ombra SENZA toccare le <img>, le frecce o i pallini (che restano
+   fuori da .sow-slider-images). Nessuna opacità/lazy: foto sempre al sicuro. */
+body:not(.home) .sow-slider-images {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(43, 46, 52, .16);
+}
+
+/* Testo più arioso e leggibile */
+body:not(.home) .entry-content .textwidget p {
+  line-height: 1.8;
+  max-width: 70ch;
+}
+
+/* Navigazione tra progetti (precedente / successivo) come link-bottone */
+body:not(.home) .nav-previous-hn,
+body:not(.home) .nav-next-hn {
+  display: inline-block;
+  transition: color .3s ease, transform .25s ease;
+}
+body:not(.home) .nav-previous-hn a,
+body:not(.home) .nav-next-hn a {
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: .82em;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color .3s ease;
+}
+@media (hover: hover) {
+  body:not(.home) .nav-previous-hn:hover,
+  body:not(.home) .nav-next-hn:hover { transform: translateY(-1px); }
+  body:not(.home) .nav-previous-hn:hover a,
+  body:not(.home) .nav-next-hn:hover a,
+  body:not(.home) .nav-previous-hn:hover,
+  body:not(.home) .nav-next-hn:hover { color: var(--lr-brand) !important; }
+}
+
+/* === 6. PORTFOLIO: griglia custom a card con etichetta SOVRAPPOSTA ======= */
+body:not(.home) .lr-portfolio-intro {
+  max-width: 62ch;
+  color: #6b6660;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: .6em 0 2.2em;
+}
+body:not(.home) .lr-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+@media (max-width: 900px) { body:not(.home) .lr-portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+@media (max-width: 560px) { body:not(.home) .lr-portfolio-grid { grid-template-columns: 1fr; } }
+
+body:not(.home) a.lr-cat-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(43, 46, 52, .14);
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease;
+}
+body:not(.home) .lr-cat-card .lr-cat-img { position: absolute; inset: 0; display: block; }
+body:not(.home) .lr-cat-card .lr-cat-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+}
+body:not(.home) .lr-cat-card .lr-cat-body {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 56px 22px 20px;
+  background: linear-gradient(to top, rgba(28,20,21,.86) 0%, rgba(28,20,21,.38) 52%, rgba(28,20,21,0) 100%);
+}
+body:not(.home) .lr-cat-card .lr-cat-label {
+  font-size: 1.14rem; font-weight: 600; letter-spacing: .01em; line-height: 1.2;
+}
+body:not(.home) .lr-cat-card .lr-cat-go {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .14em;
+  color: rgba(255,255,255,.88);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+@media (hover: hover) {
+  body:not(.home) a.lr-cat-card:hover { transform: translateY(-8px); box-shadow: 0 22px 46px rgba(131,55,61,.3); }
+  body:not(.home) a.lr-cat-card:hover .lr-cat-img img { transform: scale(1.08); }
+  body:not(.home) a.lr-cat-card:hover .lr-cat-go { opacity: 1; transform: none; }
+}
+
+/* === 7. CONTATTI: due colonne (scheda info brand + form) + mappa sotto === */
+body:not(.home) .lr-contact {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 30px;
+  align-items: start;
+}
+@media (max-width: 820px) { body:not(.home) .lr-contact { grid-template-columns: 1fr; gap: 24px; } }
+
+body:not(.home) .lr-contact-info {
+  background: var(--lr-brand);
+  color: #fff;
+  border-radius: 18px;
+  padding: 34px 32px;
+  box-shadow: 0 16px 36px rgba(131, 55, 61, .24);
+}
+body:not(.home) .lr-contact-info .lr-contact-h { color: #fff; margin: 0 0 .7em; font-size: 1.5rem; }
+body:not(.home) .lr-contact-name { font-size: 1.15rem; line-height: 1.5; margin: 0 0 1.3em; }
+body:not(.home) .lr-contact-name span { opacity: .82; font-size: .9rem; }
+body:not(.home) .lr-contact-list { list-style: none; margin: 0 0 1.5em; padding: 0; }
+body:not(.home) .lr-contact-list li { display: flex; align-items: center; gap: 12px; margin: 0 0 .75em; }
+body:not(.home) .lr-contact-list img.letter-contatti { width: 30px; height: auto; filter: brightness(0) invert(1); }
+body:not(.home) .lr-contact-list a { color: #fff !important; text-decoration: none; transition: opacity .3s ease; }
+@media (hover: hover) { body:not(.home) .lr-contact-list a:hover { opacity: .78; } }
+body:not(.home) .lr-contact-mail { margin-top: .2em; }
+body:not(.home) .lr-contact-mail a { font-weight: 500; word-break: break-word; }
+body:not(.home) .lr-contact-mail span { color: #ffd9d0; }
+body:not(.home) .lr-contact-addr { margin: 0 0 1.5em; opacity: .95; line-height: 1.5; }
+body:not(.home) .lr-maps-btn {
+  display: inline-block;
+  background: #fff; color: var(--lr-brand) !important;
+  border-radius: 40px; padding: .72em 1.7em;
+  text-transform: uppercase; letter-spacing: .08em;
+  font-size: .8rem; font-weight: 600; text-decoration: none;
+  transition: transform .25s ease, box-shadow .3s ease;
+}
+@media (hover: hover) { body:not(.home) .lr-maps-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.22); } }
+
+body:not(.home) .lr-contact-form {
+  background: #fff;
+  border: 1px solid var(--lr-line);
+  border-radius: 18px;
+  padding: 32px 32px 12px;
+  box-shadow: 0 10px 28px rgba(43, 46, 52, .08);
+}
+body:not(.home) .lr-contact-form .lr-contact-h { margin: 0 0 1em; font-size: 1.5rem; }
+body:not(.home) .lr-contact-form .wpcf7 input[type="text"],
+body:not(.home) .lr-contact-form .wpcf7 input[type="email"],
+body:not(.home) .lr-contact-form .wpcf7 textarea { width: 100%; box-sizing: border-box; }
+body:not(.home) .lr-contact-form .wpcf7 p { margin: 0 0 1.1em; }
+
+body:not(.home) .lr-contact-map {
+  margin-top: 36px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(43, 46, 52, .14);
+}
+body:not(.home) .lr-contact-map iframe { display: block; }
+
+/* === 8. BIO: ritratto grande + colonna testo (due colonne allineate) ===== */
+body:not(.home) .post-471 #pl-471 > .panel-grid:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 46px;
+  margin: 0;
+}
+body:not(.home) .post-471 #pgc-471-0-0 {
+  width: 40% !important;
+  max-width: 460px;
+  float: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+body:not(.home) .post-471 #pgc-471-0-1 {
+  width: auto !important;
+  flex: 1 1 320px;
+  float: none !important;
+  padding: 0 !important;
+}
+/* rimuove il titolo "Bio" duplicato dentro al testo (resta quello in cima) */
+body:not(.home) .post-471 .textwidget > h1 { display: none; }
+/* primo paragrafo come "lead" */
+body:not(.home) .post-471 .textwidget p:first-of-type {
+  font-size: 1.18rem;
+  line-height: 1.7;
+  color: var(--lr-ink);
+}
+@media (max-width: 760px) {
+  body:not(.home) .post-471 #pl-471 > .panel-grid:first-child { gap: 28px; }
+  body:not(.home) .post-471 #pgc-471-0-0 { width: 100% !important; max-width: none; }
+}
+
+/* === 9. CATEGORIA: ogni progetto a DUE COLONNE (slider | nome+testo) ===== */
+/* 1) via le colonne-spacer laterali: il progetto usa tutta la larghezza */
+body:not(.home) .entry-content:has(.widget-title) .panel-grid-cell:not(:has(.so-panel)) {
+  display: none !important;
+}
+/* 2) titolo di sezione (riga di solo titolo) a tutta larghezza */
+body:not(.home) .entry-content:has(.widget-title) .panel-grid-cell:has(.widget-title):not(:has(.sow-slider-base)) {
+  width: 100% !important;
+  float: none !important;
+  padding: 0 !important;
+}
+/* 3) la cella con lo slider diventa una griglia a 2 colonne */
+body:not(.home) .entry-content:has(.widget-title) .panel-grid-cell:has(.sow-slider-base) {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 8px 46px;
+  align-items: center;
+  width: 100% !important;
+  float: none !important;
+  padding: 0 !important;
+}
+body:not(.home) .panel-grid-cell:has(.sow-slider-base) > .so-panel.widget_sow-slider {
+  grid-column: 1;
+  grid-row: 1 / span 30;
+  align-self: center;
+  margin: 0 !important;
+  min-width: 0;            /* evita che lo slider sfori la colonna */
+}
+body:not(.home) .panel-grid-cell:has(.sow-slider-base) > .so-panel.widget_sow-editor {
+  grid-column: 2;
+  margin: 0 0 .4em !important;
+}
+/* nome progetto (kicker) nella colonna testo: più grande */
+body:not(.home) .panel-grid-cell:has(.sow-slider-base) .widget-title {
+  font-size: 1.55rem;
+  letter-spacing: .03em;
+  margin-bottom: .55em;
+}
+/* testo del progetto più leggibile */
+body:not(.home) .entry-content:has(.widget-title) .textwidget p:first-of-type {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--lr-ink);
+}
+/* su schermi stretti torna a colonna singola (slider sopra, testo sotto) */
+@media (max-width: 820px) {
+  body:not(.home) .entry-content:has(.widget-title) .panel-grid-cell:has(.sow-slider-base) {
+    display: block;
+  }
+  body:not(.home) .panel-grid-cell:has(.sow-slider-base) > .so-panel { margin-bottom: 18px !important; }
+}
+/* barra prev/next progetto */
+body:not(.home) .nav-previous-hn,
+body:not(.home) .nav-next-hn {
+  display: inline-block;
+  padding: .66em 1.5em;
+  margin: 1.2em .6em 0 0;
+  border: 1.5px solid var(--lr-line);
+  border-radius: 40px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: .78rem;
+  font-weight: 500;
+  transition: background-color .3s ease, border-color .3s ease, color .3s ease, transform .25s ease;
+}
+body:not(.home) .nav-previous-hn a,
+body:not(.home) .nav-next-hn a { color: var(--lr-ink) !important; text-decoration: none; }
+@media (hover: hover) {
+  body:not(.home) .nav-previous-hn:hover,
+  body:not(.home) .nav-next-hn:hover {
+    background: var(--lr-brand);
+    border-color: var(--lr-brand);
+    transform: translateY(-2px);
+  }
+  body:not(.home) .nav-previous-hn:hover a,
+  body:not(.home) .nav-next-hn:hover a { color: #fff !important; }
+}
+
+/* === 10. HOME (landing): tile categoria modernizzate come card ===========
+   Si tocca SOLO la griglia categorie della home: intro, logo e header restano
+   intatti. Le immagini (duotone) restano come sono: è lo stile scelto. */
+
+/* la cella diventa il riquadro-card (ancora il label al suo interno) */
+body.home .righe-portfolio .panel-grid-cell { position: relative; }
+body.home .righe-portfolio .panel-grid-cell .so-panel,
+body.home .righe-portfolio .panel-grid-cell .panel-widget-style { margin-bottom: 0 !important; }
+
+/* immagine: card arrotondata con ombra, ritaglio uniforme */
+body.home .righe-portfolio .sow-image-container {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(43, 46, 52, .18);
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease;
+}
+body.home .righe-portfolio .sow-image-container img.so-widget-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+}
+/* gradiente scuro in basso (via la "L" bianca del tema) per leggere l'etichetta */
+body.home .righe-portfolio .sow-image-container::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  border: 0 !important;                 /* rimuove le linee bianche d'angolo del tema */
+  background: linear-gradient(to top, rgba(28,20,21,.72) 0%, rgba(28,20,21,.15) 46%, rgba(28,20,21,0) 72%) !important;
+  opacity: 1 !important;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* angolo ROSSO brand che COMPARE al passaggio del mouse (sostituisce la "L" bianca) */
+body.home .righe-portfolio .sow-image-container::before {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  border-right: 3px solid var(--lr-brand);
+  border-bottom: 3px solid var(--lr-brand);
+  opacity: 0;
+  transform: translate(8px, 8px);
+  transition: opacity .35s ease, transform .35s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  body.home .righe-portfolio .panel-grid-cell:hover .sow-image-container::before {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* etichetta ancorata in basso a sinistra della card */
+body.home .righe-portfolio .cat-portfolio-title {
+  position: absolute !important;
+  top: auto !important;
+  right: auto !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  padding: 0 20px 18px !important;
+  margin: 0 !important;
+  z-index: 3;
+  box-sizing: border-box;
+}
+body.home .righe-portfolio .cat-portfolio { margin: 0 !important; text-align: left; }
+body.home .righe-portfolio .link-cat-portfolio {
+  color: #fff !important;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-decoration: none;
+}
+
+/* hover: sollevamento della card + zoom foto */
+@media (hover: hover) {
+  body.home .righe-portfolio .panel-grid-cell:hover .sow-image-container {
+    transform: translateY(-8px);
+    box-shadow: 0 22px 46px rgba(131, 55, 61, .3);
+  }
+  body.home .righe-portfolio .panel-grid-cell:hover .sow-image-container img.so-widget-image {
+    transform: scale(1.06);
+  }
+}
+
+/* mobile: etichetta più piccola così parole lunghe non si spezzano */
+@media (max-width: 560px) {
+  body.home .righe-portfolio .cat-portfolio,
+  body.home .righe-portfolio .link-cat-portfolio { font-size: 1.15rem !important; line-height: 1.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.home .righe-portfolio .panel-grid-cell:hover .sow-image-container { transform: none; }
+  body.home .righe-portfolio .panel-grid-cell:hover .sow-image-container img.so-widget-image { transform: none; }
+}
+
+/* === Accessibilità: nessun movimento se l'utente lo disattiva ============ */
+@media (prefers-reduced-motion: reduce) {
+  body:not(.home) #primary { animation: none; }
+  body:not(.home) .panel-grid-cell:hover { transform: none; }
+  body:not(.home) .panel-grid-cell:hover .sow-image-container img.so-widget-image { transform: none; }
+  html.lr-anim body:not(.home) .entry-title::after { transform: scaleX(1); transition: none; }
+  body:not(.home) .entry-content a[href$=".pdf"]:hover,
+  body:not(.home) .wpcf7 .wpcf7-submit:hover { transform: none; }
+}
